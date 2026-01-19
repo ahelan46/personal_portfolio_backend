@@ -1,0 +1,314 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}Home - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Set the full home page background to light pink */
+    /* Full screen fix */
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Light pink background for entire page */
+    body {
+        background-color: #ffe6f0;
+        overflow-x: hidden; /* prevents horizontal scroll */
+    }
+
+    /* Main content wrapper */
+    .main-content {
+        max-width: 1200px;
+        margin: auto;
+        padding: 1rem;
+    }
+
+    
+    
+    body {
+        background-color: #ffe6f0;  /* soft light pink */
+        margin: 0;                  /* remove default margin */
+        min-height: 100vh;          /* ensures background covers full screen */
+    }
+
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        margin: 3rem 0 2rem;
+        text-align: center;
+        color: #667eea;
+    }
+    
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .project-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .project-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+    
+    .project-image {
+    width: 20%;          /* reduce width */
+    height: 180px;
+    object-fit: cover;
+    margin: 1rem auto;   /* center image */
+    display: block;
+    border-radius: 8px;
+    }
+
+
+    
+    .project-content {
+        padding: 1.5rem;
+    }
+    
+    .project-content h3 {
+        margin-bottom: 0.5rem;
+        color: #667eea;
+    }
+    
+    .project-content p {
+        color: #666;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+    
+    .skill-tag {
+        background-color: #667eea;
+        color: white;
+        padding: 0.75rem;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    /* Skills Section Wrapper */
+.skills-section {
+    width: 100%;
+    padding: 4rem 1.5rem;
+    background-color: #f5f6ff;
+    margin-top: 3rem;
+}
+
+/* Skills Card Container */
+.skills-container {
+    max-width: 1000px;
+    margin: auto;
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Skills Grid (override existing slightly) */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* Skill Box */
+.skill-tag {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skill-tag:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Skill Percentage */
+.skill-percent {
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    opacity: 0.9;
+}
+
+/* Button Alignment */
+.skills-btn {
+    text-align: center;
+}
+
+/* Skill Card Customization */
+.skill-card {
+    text-align: center;
+}
+
+/* Skill Progress Bar */
+.skill-progress {
+    width: 100%;
+    height: 8px;
+    background: #e0e3ff;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.skill-progress-bar {
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 5px;
+    transition: width 0.4s ease;
+}
+
+.projects-grid, .skills-grid {
+    padding: 1rem 0;
+}
+
+.project-card, .skills-container {
+    background: white; /* keeps cards white over pink background */
+}
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.project-card {
+    width: 100%;
+}
+
+.hero {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+    
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+        }
+        
+        .cta-buttons .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+<div class="hero">
+    {% if about %}
+        <h1>Hi, I'm {{ about.name }}</h1>
+        <p>{{ about.bio|truncatewords:30 }}</p>
+    {% else %}
+        <h1>Welcome to My Portfolio</h1>
+        <p>Showcasing my projects and skills</p>
+    {% endif %}
+    <div class="cta-buttons">
+        <a href="{% url 'portfolio:project_list' %}" class="btn">View My Work</a>
+        <a href="{% url 'portfolio:contact' %}" class="btn btn-secondary">Get In Touch</a>
+    </div>
+</div>
+
+{% if featured_projects %}
+<h2 class="section-title">Featured Projects</h2>
+<div class="projects-grid">
+    {% for project in featured_projects %}
+    <div class="project-card">
+        {% if project.image %}
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">
+        {% else %}
+            <div class="project-image">📁</div>
+        {% endif %}
+        <div class="project-content">
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.short_description|truncatewords:15 }}</p>
+            <a href="{% url 'portfolio:project_detail' project.id %}" class="btn">View Project</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div style="text-align: center; margin-bottom: 2rem;">
+    <a href="{% url 'portfolio:project_list' %}" class="btn">View All Projects</a>
+</div>
+{% endif %}
+
+{% if skills %}
+<h2 class="section-title">My Skills</h2>
+
+<div class="projects-grid">
+    {% for skill in skills|slice:":8" %}
+    <div class="project-card skill-card">
+        <div class="project-content">
+            <h3>{{ skill.name }}</h3>
+            <p>Proficiency Level</p>
+
+            <div class="skill-progress">
+                <div class="skill-progress-bar" style="width: {{ skill.proficiency }}%"></div>
+            </div>
+
+            <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+                {{ skill.proficiency }}%
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div style="text-align: center; margin-bottom: 3rem;">
+    <a href="{% url 'portfolio:skills' %}" class="btn">View All Skills</a>
+</div>
+{% endif %}
+
+{% endblock %}

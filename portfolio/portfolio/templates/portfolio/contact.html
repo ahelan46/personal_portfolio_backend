@@ -1,0 +1,289 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}Contact Me - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    h1 {
+        text-align: center;
+        color: #667eea;
+        margin-bottom: 2rem;
+    }
+    
+    .contact-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .contact-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .contact-info:last-child {
+        border-bottom: none;
+    }
+    
+    .contact-icon {
+        font-size: 2rem;
+        margin-right: 1rem;
+        width: 50px;
+        text-align: center;
+    }
+    
+    .contact-details h3 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+    
+    .contact-details a {
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .contact-details a:hover {
+        text-decoration: underline;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: bold;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-family: inherit;
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+    }
+    
+    .submit-btn {
+        width: 100%;
+    }
+    
+    .social-links {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+    
+    .social-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #667eea;
+        color: white;
+        text-decoration: none;
+        font-size: 1.5rem;
+        transition: background-color 0.3s;
+    }
+    
+    .social-links a:hover {
+        background-color: #764ba2;
+    }
+
+    /* Resume Button */
+    .resume-btn {
+        display: inline-block;
+        padding: 0.5rem 1.2rem;
+        background-color: #667eea;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .resume-btn:hover {
+        background-color: #764ba2;
+    }
+
+    /* Resume Info spacing */
+    .resume-info {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .resume-btn {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    background-color: #667eea;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    }
+
+    .resume-btn:hover {
+        background-color: #764ba2;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+    <h1>Get In Touch</h1>
+    
+    <div class="contact-card">
+        {% if about %}
+        <div class="contact-info">
+            <div class="contact-icon">📧</div>
+            <div class="contact-details">
+                <h3>Email</h3>
+                <a href="mailto:{{ about.email }}">{{ about.email }}</a>
+                
+
+            </div>
+        </div>
+        <p style="color:red; text-align:center;">
+           {% if about.resume %}
+        <div class="contact-info">
+            <div class="contact-icon">📄</div>
+            <div class="contact-details">
+                <h3>Resume</h3>
+                <a href="{{ about.resume.url }}" class="resume-btn" download>
+                    Download Resume
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        </p>
+
+        
+        {% if about.phone %}
+        <div class="contact-info">
+            <div class="contact-icon">📱</div>
+            <div class="contact-details">
+                <h3>Phone</h3>
+                <p>{{ about.phone }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if about.resume %}
+        <div class="contact-info resume-info">
+            <div class="contact-icon">📄</div>
+            <div class="contact-details">
+                <h3>Resume</h3>
+                <a href="{{ about.resume.url }}" class="resume-btn" download>
+                    Download Resume
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if about.location %}
+        <div class="contact-info">
+            <div class="contact-icon">📍</div>
+            <div class="contact-details">
+                <h3>Location</h3>
+                <p>{{ about.location }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if about.resume %}
+        <div class="contact-info resume-info">
+            <div class="contact-icon">📄</div>
+            <div class="contact-details">
+                <h3>Resume</h3>
+                <a href="{{ about.resume.url }}" class="resume-btn" download>
+                    Download Resume
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if messages %}
+        {% for message in messages %}
+        <div style="
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+        ">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        
+
+        
+        {% else %}
+        <p style="text-align: center; color: #999;">Contact information not available yet. Please check back soon!</p>
+        {% endif %}
+    </div>
+    
+    <div class="contact-card">
+        <h2 style="color: #667eea; margin-bottom: 1.5rem;">Send me a message</h2>
+        <p style="color: #666; margin-bottom: 1.5rem;">You can reach me at the email address above, or fill out the form below:</p>
+        
+        <form method="POST" action="#">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                 <input type="text" id="name" name="name" required pattern="[A-Za-z\s]+" title="Only letters are allowed"
+    >
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Your Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn submit-btn">Send Message</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

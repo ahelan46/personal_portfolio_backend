@@ -1,0 +1,168 @@
+{% extends 'portfolio/base.html' %}
+{% load portfolio_tags %}
+
+{% block title %}Projects - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+
+    .single-project-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+    }
+
+    
+    .single-project-container .project-card {
+    max-width: 400px; /* keeps it neat */
+    width: 100%;
+    }
+
+    .projects-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .project-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .project-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+    
+    .project-image {
+        width: 100%;
+        height: 200px;
+        background-color: #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #999;
+    }
+    
+    .project-body {
+        padding: 1.5rem;
+    }
+    
+    .project-body h3 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+    
+    .project-body p {
+        color: #666;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .tech-tag {
+        background-color: #f0f0f0;
+        padding: 0.3rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        color: #667eea;
+    }
+    
+    .pagination {
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .pagination a, .pagination span {
+        padding: 0.5rem 0.8rem;
+        margin: 0 0.25rem;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #667eea;
+    }
+    
+    .pagination .page-current {
+        background-color: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+    
+    .pagination a:hover {
+        background-color: #667eea;
+        color: white;
+    }
+    
+    h1 {
+        text-align: center;
+        color: #667eea;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>My Projects</h1>
+
+{% if projects %}
+    {% if projects|length == 1 %}
+    <div class="single-project-container"> 
+    {% else %}
+    <div class="projects-container">
+    {% endif %}
+        {% for project in projects %}
+        <div class="project-card">
+            {% if project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">
+            {% else %}
+                <div class="project-image">📁</div>
+            {% endif %}
+            <div class="project-body">
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.short_description|truncatewords:15 }}</p>
+                
+                {% if project.technology_used %}
+                <div class="tech-tags">
+                    {% for tech in project.technology_used|split %}
+                    <span class="tech-tag">{{ tech|striptags }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <a href="{% url 'portfolio:project_detail' project.id %}" class="btn">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">« First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">‹ Previous</a>
+        {% endif %}
+        
+        <span class="page-current">{{ page_obj.number }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next ›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last »</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% else %}
+    <p style="text-align: center; color: #999; font-size: 1.2rem;">No projects yet. Check back soon!</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}About Me - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+
+        gap: 3rem;
+        align-items: start;
+        margin-bottom: 3rem;
+    }
+    
+    .about-image {
+        text-align: center;
+    }
+    
+    .profile-image {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .about-info {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .about-info h1 {
+        color: #667eea;
+        margin-bottom: 1rem;
+    }
+    
+    .about-info p {
+        line-height: 1.8;
+        color: #555;
+        margin-bottom: 1rem;
+    }
+    
+    .contact-info {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 5px;
+        margin-top: 1.5rem;
+    }
+    
+    .contact-info div {
+        margin: 0.5rem 0;
+    }
+    
+    .contact-info strong {
+        color: #667eea;
+    }
+    
+    .skills-section {
+        margin-top: 3rem;
+    }
+    
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .skill-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .skill-card h4 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+    
+    .skill-card .category {
+        font-size: 0.8rem;
+        color: #999;
+    }
+    
+    .proficiency-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+    
+    .proficiency-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: width 0.3s;
+    }
+    
+    .resume-button {
+        margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .about-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .skills-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if about %}
+<div class="about-container">
+    <div class="about-image">
+        {% if about.profile_image %}
+        <img src="{{ about.profile_image.url }}" alt="{{ about.name }}" class="profile-image">
+        {% else %}
+        <div class="profile-image" style="background-color: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #999;">👤</div>
+        {% endif %}
+    </div>
+    
+    <div class="about-info">
+        <h1>{{ about.name }}</h1>
+        <p>{{ about.bio }}</p>
+        
+        <div class="contact-info">
+            {% if about.email %}
+            <div><strong>Email:</strong> <a href="mailto:{{ about.email }}">{{ about.email }}</a></div>
+            {% endif %}
+            {% if about.phone %}
+            <div><strong>Phone:</strong> {{ about.phone }}</div>
+            {% endif %}
+            {% if about.location %}
+            <div><strong>Location:</strong> {{ about.location }}</div>
+            {% endif %}
+        </div>
+        
+        {% if about.resume %}
+        <div class="resume-button">
+            <a href="{{ about.resume.url }}" target="_blank" class="btn">Download Resume</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if skills %}
+<div class="skills-section">
+    <h2 style="color: #667eea; margin-bottom: 1rem;">Skills</h2>
+    <div class="skills-grid">
+        {% for skill in skills %}
+        <div class="skill-card">
+            <h4>{{ skill.name }}</h4>
+            <div class="category">{{ skill.get_category_display }}</div>
+            <div class="proficiency-bar">
+                <div class="proficiency-fill" style="width: {{ skill.proficiency }}%"></div>
+            </div>
+            <div style="font-size: 0.8rem; color: #999; margin-top: 0.5rem;">{{ skill.proficiency }}%</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div style="text-align: center; padding: 3rem;">
+    <p style="font-size: 1.2rem; color: #999;">About information not available. <a href="{% url 'admin:index' %}">Add it in admin panel</a>.</p>
+</div>
+{% endif %}
+{% endblock %}
