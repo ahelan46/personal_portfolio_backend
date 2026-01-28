@@ -6,7 +6,7 @@ from .models import Project, Skill, About
 
 def home(request):
     """Home page view"""
-    featured_projects = Project.objects.filter(is_featured=True)[:3]
+    featured_projects = Project.objects.all().order_by('-created_at')
     skills = Skill.objects.all()
     
     try:
@@ -82,6 +82,8 @@ def contact_view(request):
 
 
 def contact(request):
+    about = About.objects.first()
+    
     if request.method == "POST":
         name = request.POST.get("name")
         email = request.POST.get("email")
@@ -93,4 +95,5 @@ def contact(request):
         messages.success(request, "Your message has been sent successfully!")
         return redirect("portfolio:contact")
 
-    return render(request, "portfolio/contact.html")
+    context = {'about': about}
+    return render(request, "portfolio/contact.html", context)
