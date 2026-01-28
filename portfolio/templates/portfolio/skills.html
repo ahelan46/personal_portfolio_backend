@@ -1,0 +1,329 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}Skills - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ================= GLOBAL SETUP ================= */
+body {
+    background-color: #0f172a; 
+    color: #f8fafc;
+    overflow-x: hidden;
+}
+
+h1 {
+    text-align: center;
+    color: #38bdf8;
+    margin: 3rem 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+/* ================= ENTRANCE ANIMATIONS ================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= SINGLE ROW SCROLL LAYOUT ================= */
+.skills-wrapper {
+    position: relative;
+    padding: 0 1rem;
+    margin-bottom: 5rem;
+}
+
+.skills-horizontal-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; /* Forces one single row */
+    gap: 2.5rem;
+    padding: 2rem 1rem;
+    
+    /* Enables horizontal scrolling */
+    overflow-x: auto; 
+    scroll-behavior: smooth;
+    
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.skills-horizontal-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* ================= CATEGORY CARDS (FIXED DIMENSIONS) ================= */
+.category-section {
+    width: 450px;           
+    min-width: 450px; /* Prevents cards from squishing */
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(12px);
+    padding: 2rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.category-section h2 {
+    color: #38bdf8;
+    margin-bottom: 2rem;
+    font-size: 1.6rem;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    padding-bottom: 0.5rem;
+    text-align: center;
+}
+
+/* ================= SKILLS LIST ================= */
+.skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.skill-item {
+    width: 100%;
+}
+
+.skill-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.proficiency-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #0f172a;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.proficiency-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    border-radius: 10px;
+    
+    /* Animation: start at 0 */
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.5s cubic-bezier(0.17, 0.55, 0.55, 1);
+}
+
+/* When the card is revealed, animate the bar */
+.category-section.active .proficiency-fill {
+    transform: scaleX(1);
+}
+
+/* ================= NAVIGATION BUTTONS ================= */
+.scroll-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.nav-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+}
+
+.nav-btn:hover {
+    background: #38bdf8;
+    transform: scale(1.1);
+}
+
+/* Mobile Tweak */
+@media (max-width: 992px) {
+    .category-section {
+        width: 400px;
+        min-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .skills-wrapper {
+        padding: 0 0.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .category-section {
+        width: 85vw;
+        min-width: 85vw;
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .category-section h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .skills-list {
+        gap: 1.2rem;
+    }
+    
+    .skill-item {
+        margin-bottom: 0.8rem;
+    }
+    
+    .skill-info {
+        font-size: 0.95rem;
+    }
+    
+    .proficiency-bar {
+        height: 7px;
+        margin-top: 0.4rem;
+    }
+    
+    .scroll-nav {
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .nav-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .container {
+        padding: 1rem 0.75rem;
+    }
+    
+    .skills-wrapper {
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .category-section {
+        width: 95vw;
+        min-width: 95vw;
+        padding: 1.2rem;
+        border-radius: 12px;
+    }
+    
+    .category-section h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+        font-weight: 700;
+    }
+    
+    .skills-list {
+        gap: 1rem;
+    }
+    
+    .skill-item {
+        margin-bottom: 0.6rem;
+    }
+    
+    .skill-info {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .proficiency-bar {
+        height: 6px;
+        margin-top: 0.3rem;
+    }
+    
+    .scroll-nav {
+        gap: 1rem;
+        margin-top: 1.2rem;
+    }
+    
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="reveal">My Skills</h1>
+
+    {% if categories %}
+    <div class="skills-wrapper">
+        <div class="skills-horizontal-container" id="skillSlider">
+            {% for category, category_skills in categories.items %}
+            <div class="category-section reveal">
+                <h2>{{ category }}</h2>
+
+                <div class="skills-list">
+                    {% for skill in category_skills %}
+                    <div class="skill-item">
+                        <div class="skill-info">
+                            <span>{{ skill.name }}</span>
+                            <span style="color: #38bdf8;">{{ skill.proficiency }}%</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" style="width: {{ skill.proficiency }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="scroll-nav reveal">
+            
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    const slider = document.getElementById('skillSlider');
+
+    // Intersection Observer for Reveal & Bar Animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Scroll Function
+    function scrollSkills(direction) {
+        const scrollAmount = 480; 
+        slider.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+</script>
+{% endblock %}

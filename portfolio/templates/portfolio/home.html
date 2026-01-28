@@ -1,0 +1,449 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}Home - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+/* ================= GLOBAL & 3D SETUP ================= */
+html { scroll-behavior: smooth; }
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #0f172a; 
+    color: #f8fafc;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ================= SECTIONS ================= */
+.page-section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 1.5rem;
+}
+
+.hero {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: white;
+    border-radius: 30px;
+    padding: 3.5rem;
+    max-width: 1100px;
+    width: 100%;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.hero-layout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+}
+
+.hero-text h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #fff, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ================= BUTTONS ================= */
+.cta-buttons { 
+    display: flex; 
+    gap: 1.5rem; 
+    margin-top: 2rem;
+}
+
+.btn-3d {
+    padding: 0.8rem 1.8rem;
+    background: #2563eb;
+    color: white;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-3d:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(37,99,235,0.4);
+}
+
+.btn-secondary { background: #334155; }
+
+.view-all-container {
+    text-align: center;
+    margin-top: 4rem;
+    width: 100%;
+}
+
+/* ================= PROJECT CARDS ================= */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4rem;
+    color: #38bdf8;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.project-card {
+    background: #1e293b;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.project-image { width: 100%; height: 200px; object-fit: cover; }
+.project-content { padding: 1.5rem; }
+.project-content h3 { color: #38bdf8; margin-bottom: 0.5rem; }
+.project-content p { color: #94a3b8; margin-bottom: 1.5rem; font-size: 0.95rem; }
+
+/* ================= HERO IMAGE ================= */
+.hero-image img {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 6px solid rgba(56,189,248,0.3);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+/* ================= SKILLS ================= */
+.skill-tag {
+    background: #1e293b;
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: 600;
+    color: #38bdf8;
+    border: 1px solid rgba(56,189,248,0.1);
+}
+
+/* ================= PREMIUM CONTACT SECTION ================= */
+/* .contact-section {
+    background: radial-gradient(circle at bottom left, #1e293b, #0f172a);
+} */
+
+.contact-row {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.contact-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 3rem;
+    border-radius: 24px;
+    border: 1px solid rgba(56, 189, 248, 0.1);
+    width: 100%;
+    max-width: 480px;
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.contact-card h3 {
+    font-size: 1.8rem;
+    color: #f8fafc;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.contact-card h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #38bdf8;
+    border-radius: 10px;
+}
+
+
+/* Enhanced Resume Styling */
+.resume-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    transition: all 0.3s ease;
+}
+
+.resume-link:hover {
+    background: #38bdf8;
+    color: #0f172a;
+    transform: translateY(-2px);
+}
+
+.contact-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.contact-info-text label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 1px;
+}
+/* Professional Info Items */
+.contact-info {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1.2rem;
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 16px;
+    transition: transform 0.3s ease, background 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.contact-info:hover {
+    background: rgba(56, 189, 248, 0.08);
+    transform: translateX(8px);
+}
+
+.contact-info .icon-box {
+    font-size: 1.5rem;
+    min-width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(56, 189, 248, 0.1);
+    border-radius: 12px;
+}
+
+.contact-info p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 1rem;
+}
+
+/* Modern Form Elements */
+.form-group { margin-bottom: 1.5rem; }
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #0f172a;
+    color: #fff;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #38bdf8;
+    background: #1e293b;
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+}
+
+.btn-full { width: 100%; margin-top: 1rem; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .hero-layout { flex-direction: column-reverse; text-align: center; }
+    .cta-buttons { flex-direction: column; }
+    .contact-card { padding: 2rem; }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-section hero-section">
+    <div class="hero" data-aos="fade-up">
+        <div class="hero-layout">
+            <div class="hero-text">
+                {% if about %}
+                    <h1>Hi, I'm {{ about.name }}</h1>
+                    <p>{{ about.bio|truncatewords:30 }}</p>
+                {% else %}
+                    <h1>Welcome to My Portfolio</h1>
+                    <p>Showcasing my projects and skills with modern web technologies.</p>
+                {% endif %}
+
+                <div class="cta-buttons">
+                    <a href="{% url 'portfolio:project_list' %}" class="btn-3d">View My Work</a>
+                    <a href="#contact-anchor" class="btn-3d btn-secondary">Get In Touch</a>
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <img src="/media/WhatsApp Image 2026-01-14 at 1.53.18 PM.jpeg" alt="Profile Photo">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if featured_projects %}
+<div class="page-section projects-section">
+    <div class="section-content" style="width: 100%; max-width: 1200px;">
+        <h2 class="section-title" data-aos="fade-up">Featured Projects</h2>
+
+        <div class="projects-grid">
+            {% for project in featured_projects %}
+            <div class="project-card" data-tilt data-tilt-max="10" data-tilt-speed="1000">
+                {% if project.image %}
+                    <img src="{{ project.image.url }}" class="project-image" alt="{{ project.title }}">
+                {% endif %}
+                <div class="project-content">
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.short_description|truncatewords:15 }}</p>
+                    <a href="{% url 'portfolio:project_detail' project.id %}" class="btn-3d" style="padding: 0.5rem 1rem; font-size: 0.85rem;">View Project</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="view-all-container" data-aos="fade-up">
+            <a href="{% url 'portfolio:project_list' %}" class="btn-3d btn-secondary">View All Projects</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if skills %}
+<div class="page-section skills-section">
+    <div class="section-content" style="width: 100%; max-width: 1200px;">
+        <h2 class="section-title" data-aos="fade-up">My Skills</h2>
+        <div class="skills-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem;">
+            {% for skill in skills|slice:":8" %}
+            <div class="skill-tag" data-aos="zoom-in">
+                {{ skill.name }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div id="contact-anchor" class="page-section contact-section">
+    <div class="section-content" style="width: 100%; max-width: 1100px;">
+        <h2 class="section-title" data-aos="fade-up">Contact Me</h2>
+
+        <div class="contact-row">
+            <div class="contact-card" data-aos="fade-right">
+                <h3>Contact Details</h3>
+
+                <div class="contact-info">
+                    <div class="icon-box">📧</div>
+                    <p>ahelanv2006@gmail.com</p>
+                </div>
+
+                <div class="contact-info">
+                    <div class="icon-box">📞</div>
+                    <p>+91 7200673492</p>
+                </div>
+
+                <div class="contact-info">
+                <div class="icon-box">📄</div>
+                <div class="contact-info-text">
+                    <label>Resume</label>
+                    {% if about.resume %}
+                        <a href="{{ about.resume.url }}" class="resume-link" download>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            Download CV
+                        </a>
+                    {% else %}
+                        <p style="color: #64748b; font-size: 0.9rem;">Not available</p>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+
+            <div class="contact-card" data-aos="fade-left">
+                <h3>Send a Message</h3>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="full_name" name="full_name" placeholder="Enter your name" required pattern="[A-Za-z\s]+" title="Only letters are allowed">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" placeholder="Write your message" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-3d btn-full">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+    
+    VanillaTilt.init(document.querySelectorAll(".project-card"), {
+        max: 8,
+        speed: 800,
+        glare: true,
+        "max-glare": 0.2,
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,395 @@
+{% extends 'portfolio/base.html' %}
+{% load portfolio_tags %}
+
+{% block title %}Projects - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ================= GLOBAL SETUP ================= */
+body {
+    background-color: #0f172a; 
+    color: #f8fafc;
+}
+
+h1 {
+    text-align: center;
+    color: #38bdf8;
+    margin: 3rem 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+/* ================= ENTRANCE ANIMATIONS ================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= SINGLE ROW SCROLL SYSTEM ================= */
+.scroll-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 0 4rem; /* Space for arrows */
+}
+
+.projects-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; /* Forces everything into one single row */
+    gap: 2.5rem;
+    padding: 2rem 0.5rem;
+    
+    /* Enables horizontal scrolling */
+    overflow-x: auto; 
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    
+    /* Hide default scrollbar for a cleaner look */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.projects-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* ================= PROJECT CARDS (DATA PRESERVED) ================= */
+.project-card {
+    width: 380px;           
+    min-width: 380px; /* Prevents squishing */
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(30, 41, 59, 0.8);
+    transform: translateY(-5px);
+}
+
+.project-image-wrapper {
+    width: 100%;
+    height: 220px;
+    background: #1e293b;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+}
+
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-body {
+    padding: 2rem;
+    flex-grow: 1;
+}
+
+.project-body h3 {
+    color: #38bdf8;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.project-body .short-desc {
+    color: #cbd5e1;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    /* Removed fixed height to ensure no data is missing */
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+}
+
+.tech-tag {
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.btn {
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    background: #2563eb;
+    color: white;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.3s;
+}
+
+/* ================= SCROLL CONTROLS ================= */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: #2563eb;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.scroll-btn:hover {
+    background: #38bdf8;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.prev-btn { left: 0; }
+.next-btn { right: 0; }
+
+.progress-container {
+    width: 200px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    margin: 2rem auto;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #38bdf8;
+    transition: width 0.2s ease;
+}
+
+/* Media query for small screens */
+@media (max-width: 992px) {
+    .scroll-wrapper {
+        padding: 0 3rem;
+    }
+    
+    .project-card {
+        width: 320px;
+        min-width: 320px;
+    }
+    
+    .scroll-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .scroll-wrapper {
+        padding: 0 1rem;
+    }
+    
+    .scroll-btn {
+        display: none;
+    }
+    
+    .project-card {
+        width: 90vw;
+        min-width: 90vw;
+    }
+    
+    .project-image-wrapper {
+        height: 180px;
+    }
+    
+    .project-body {
+        padding: 1.5rem;
+    }
+    
+    .project-body h3 {
+        font-size: 1.3rem;
+    }
+    
+    .project-body .short-desc {
+        font-size: 0.95rem;
+    }
+    
+    .tech-tags {
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .tech-tag {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .btn {
+        padding: 0.9rem;
+        font-size: 0.9rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .progress-container {
+        width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .scroll-wrapper {
+        padding: 0 0.5rem;
+    }
+    
+    .project-card {
+        width: 95vw;
+        min-width: 95vw;
+    }
+    
+    .project-image-wrapper {
+        height: 150px;
+    }
+    
+    .project-body {
+        padding: 1.2rem;
+    }
+    
+    .project-body h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .project-body .short-desc {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .tech-tags {
+        gap: 0.4rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .tech-tag {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .btn {
+        padding: 0.8rem;
+        font-size: 0.85rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1400px; margin: 0 auto; padding-bottom: 5rem;">
+    <h1 class="reveal">Featured Projects</h1>
+
+    {% if projects %}
+        <div class="scroll-wrapper reveal">
+           
+            <div class="projects-container" id="projectSlider">
+                {% for project in projects %}
+                <div class="project-card">
+                    <div class="project-image-wrapper">
+                        {% if project.image %}
+                            <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">
+                        {% else %}
+                            <div style="height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; background: #1e293b;">📁</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="project-body">
+                        <h3>{{ project.title }}</h3>
+                        
+                        <p class="short-desc">{{ project.short_description }}</p>
+                        
+                        <div class="tech-tags">
+                            {% if project.technology_used %}
+                                {% for tech in project.technology_used|split %}
+                                <span class="tech-tag">{{ tech|striptags }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                        <a href="{% url 'portfolio:project_detail' project.id %}" class="btn">Explore Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="scrollProgress"></div>
+            </div>
+        </div>
+        
+        {% if is_paginated %}
+        <div class="reveal" style="text-align: center; margin-top: 2rem;">
+            <span style="color: #94a3b8;">Showing Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        </div>
+        {% endif %}
+    {% else %}
+        <p style="text-align: center; color: #94a3b8;">No projects found.</p>
+    {% endif %}
+</div>
+
+<script>
+    const slider = document.getElementById('projectSlider');
+    const progressBar = document.getElementById('scrollProgress');
+
+    // Reveal Animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Horizontal Scroll Function
+    function scrollProjects(direction) {
+        const scrollAmount = 400; 
+        slider.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+
+    // Update Progress Bar
+    slider.addEventListener('scroll', () => {
+        const scrollTotal = slider.scrollWidth - slider.clientWidth;
+        const scrollPosition = slider.scrollLeft;
+        const scrollPercentage = (scrollPosition / scrollTotal) * 100;
+        progressBar.style.width = scrollPercentage + '%';
+    });
+</script>
+{% endblock %}
