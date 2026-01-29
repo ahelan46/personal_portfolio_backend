@@ -1,0 +1,469 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}{{ project.title }} - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ================= GLOBAL SETUP ================= */
+body {
+    background-color: #0f172a; /* Deep Slate Background */
+    color: #f8fafc;
+    min-height: 100vh;
+}
+
+/* ================= LAYOUT CONTAINER ================= */
+.detail-container {
+    max-width: 1000px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    perspective: 1000px; /* Essential for 3D effect */
+}
+
+/* ================= NAVIGATION ================= */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+    background: rgba(30, 41, 59, 0.5);
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.back-link:hover {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+    transform: translateX(-5px);
+}
+
+/* ================= MAIN GLASS CARD ================= */
+.project-card-detail {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(20px); /* Frosted Glass Effect */
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.05);
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    
+    /* Animation Entry */
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+/* ================= PROJECT IMAGE ================= */
+.image-container {
+    width: 100%;
+    height: 400px;
+    background: #1e293b;
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image covers area without distortion */
+    object-position: center;
+    transition: transform 0.5s ease;
+}
+
+/* Slight zoom on card hover */
+.project-card-detail:hover .project-image {
+    transform: scale(1.05);
+}
+
+/* ================= CONTENT AREA ================= */
+.content-wrapper {
+    padding: 3rem;
+}
+
+.project-header h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #fff, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.short-desc {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+    margin-bottom: 2rem;
+    font-weight: 300;
+}
+
+/* ================= METADATA & TECH ================= */
+.meta-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.meta-item strong {
+    color: #38bdf8;
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+}
+
+.meta-item span {
+    color: #f8fafc;
+    font-size: 1.1rem;
+}
+
+/* Tech Tags */
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.tech-tag {
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    padding: 0.5rem 1.2rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    transition: all 0.3s ease;
+}
+
+.tech-tag:hover {
+    background: #38bdf8;
+    color: #0f172a;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
+}
+
+/* ================= LONG DESCRIPTION ================= */
+.main-description {
+    line-height: 1.8;
+    color: #cbd5e1;
+    font-size: 1.05rem;
+    margin-bottom: 3rem;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.project-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(37, 99, 235, 0.5);
+    background: #3b82f6;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
+}
+
+/* ================= KEYFRAMES ================= */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .detail-container {
+        margin: 3rem auto;
+        padding: 0 1.2rem;
+    }
+    
+    .content-wrapper {
+        padding: 2.5rem;
+    }
+    
+    .project-header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .image-container {
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .detail-container {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .back-link {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .project-card-detail {
+        border-radius: 16px;
+    }
+    
+    .image-container {
+        height: 250px;
+    }
+    
+    .content-wrapper {
+        padding: 1.5rem;
+    }
+    
+    .project-header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .short-desc {
+        font-size: 1rem;
+    }
+    
+    .meta-grid {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+    
+    .meta-item strong {
+        font-size: 0.8rem;
+    }
+    
+    .meta-item span {
+        font-size: 1rem;
+    }
+    
+    .tech-tags {
+        gap: 0.6rem;
+        margin-top: 0.3rem;
+    }
+    
+    .tech-tag {
+        font-size: 0.85rem;
+        padding: 0.4rem 1rem;
+    }
+    
+    .main-description {
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+    }
+    
+    .main-description h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .project-links {
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        padding: 0.9rem 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-container {
+        margin: 1.5rem auto;
+        padding: 0 0.75rem;
+    }
+    
+    .back-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .project-card-detail {
+        border-radius: 12px;
+    }
+    
+    .image-container {
+        height: 200px;
+    }
+    
+    .content-wrapper {
+        padding: 1.2rem;
+    }
+    
+    .project-header h1 {
+        font-size: 1.4rem;
+        margin-bottom: 0.4rem;
+        -webkit-text-fill-color: revert;
+        background: none;
+    }
+    
+    .short-desc {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .meta-grid {
+        gap: 1.2rem;
+        margin-bottom: 1.2rem;
+        padding-bottom: 1.2rem;
+    }
+    
+    .meta-item strong {
+        font-size: 0.75rem;
+    }
+    
+    .meta-item span {
+        font-size: 0.95rem;
+    }
+    
+    .tech-tags {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tech-tag {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.8rem;
+        border-radius: 10px;
+    }
+    
+    .main-description {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+    
+    .main-description h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .project-links {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="detail-container">
+    <a href="{% url 'portfolio:project_list' %}" class="back-link">
+        <span>← Back to Projects</span>
+    </a>
+
+    <div class="project-card-detail" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1">
+        
+        {% if project.image %}
+        <div class="image-container">
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">
+        </div>
+        {% endif %}
+
+        <div class="content-wrapper">
+            <div class="project-header">
+                <h1>{{ project.title }}</h1>
+                <p class="short-desc">{{ project.short_description }}</p>
+            </div>
+
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <strong>Completed Date</strong>
+                    <span>{{ project.completed_date|date:"F Y" }}</span>
+                </div>
+
+                {% if project.technology_used %}
+                <div class="meta-item" style="flex: 1;">
+                    <strong>Technologies Used</strong>
+                    <div class="tech-tags">
+                        {% for tech in tech_list %}
+                        <span class="tech-tag">{{ tech|striptags }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="main-description">
+                <h2>Project Overview</h2>
+                <p>{{ project.description|linebreaks }}</p>
+            </div>
+            
+            <div class="project-links">
+                {% if project.project_url %}
+                <a href="{{ project.project_url }}" target="_blank" class="btn">
+                    View Live Project 🚀
+                </a>
+                {% endif %}
+                
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" target="_blank" class="btn btn-secondary">
+                    View on GitHub 💻
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+<script>
+    // Initialize standard tilt with subtle settings
+    VanillaTilt.init(document.querySelectorAll(".project-card-detail"), {
+        max: 5,            // Low max tilt for a large card so it's not dizzying
+        speed: 400,
+        glare: true,
+        "max-glare": 0.1,  // Very subtle shine
+    });
+</script>
+
+{% endblock %}

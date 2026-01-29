@@ -1,0 +1,463 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}Contact Me - My Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ================= GLOBAL SETUP ================= */
+body {
+    background-color: #0f172a; 
+    color: #f8fafc;
+}
+
+h1 {
+    text-align: center;
+    color: #38bdf8;
+    margin: 3rem 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+/* ================= ENTRANCE ANIMATIONS ================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= SUCCESS MESSAGE ================= */
+.success-message {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    padding: 1.2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ================= SINGLE ROW LAYOUT ================= */
+.contact-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; /* Wraps only on mobile */
+    justify-content: center;
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto 5rem;
+    padding: 0 1rem;
+}
+
+/* ================= CONTACT CARDS ================= */
+.contact-card {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(12px);
+    padding: 2.5rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    flex: 1;
+    min-width: 350px; /* Ensures they don't get too thin */
+    max-width: 550px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.contact-card h2 {
+    color: #38bdf8;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+/* ================= INFO ITEMS ================= */
+.contact-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: transform 0.3s ease;
+}
+
+.contact-info:hover {
+    transform: translateX(10px);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.contact-icon {
+    font-size: 1.8rem;
+    margin-right: 1.2rem;
+    width: 40px;
+    text-align: center;
+}
+
+.contact-details h3 {
+    color: #38bdf8;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.2rem;
+}
+
+.contact-details p, .contact-details a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+/* ================= FORM STYLING ================= */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: none;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #38bdf8;
+    background: rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+}
+
+.resume-btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: all 0.3s;
+}
+
+.resume-btn:hover {
+    background: #38bdf8;
+    color: #0f172a;
+}
+
+/* Mobile Tweak */
+@media (max-width: 992px) {
+    .contact-row {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+    
+    .contact-card {
+        min-width: 100%;
+        max-width: 100%;
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .contact-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .contact-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .contact-card p {
+        font-size: 0.95rem;
+    }
+    
+    .contact-info {
+        padding: 0.8rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .contact-icon {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        width: 35px;
+    }
+    
+    .contact-details h3 {
+        font-size: 0.85rem;
+    }
+    
+    .contact-details p, .contact-details a {
+        font-size: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        font-size: 0.85rem;
+    }
+    
+    .form-group input, .form-group textarea {
+        padding: 0.75rem 0.9rem;
+        font-size: 1rem;
+    }
+    
+    .form-group textarea {
+        min-height: 100px;
+    }
+    
+    .submit-btn {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+    }
+    
+    .resume-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem 0.75rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .contact-row {
+        padding: 0;
+        gap: 1.5rem;
+    }
+    
+    .contact-card {
+        padding: 1.2rem;
+        border-radius: 12px;
+        min-width: 100%;
+    }
+    
+    .contact-card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .contact-card p {
+        font-size: 0.9rem;
+    }
+    
+    .contact-info {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+    }
+    
+    .contact-icon {
+        font-size: 1.3rem;
+        margin-right: 0.8rem;
+        width: 30px;
+    }
+    
+    .contact-details h3 {
+        font-size: 0.8rem;
+        margin-bottom: 0.15rem;
+    }
+    
+    .contact-details p, .contact-details a {
+        font-size: 0.95rem;
+    }
+    
+    .form-group {
+        margin-bottom: 0.9rem;
+    }
+    
+    .form-group label {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .form-group input, .form-group textarea {
+        padding: 0.65rem 0.8rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+    
+    .form-group textarea {
+        min-height: 90px;
+    }
+    
+    .submit-btn {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+    
+    .resume-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .success-message {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="reveal">Get In Touch</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="success-message reveal">
+            ✅ {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="contact-row">
+        <div class="contact-card reveal">
+            <h2>Contact Information</h2>
+            <p style="color: #94a3b8; margin-bottom: 2rem;">Feel free to reach out for collaborations or just a friendly hello!</p>
+            
+            {% if about %}
+                <div class="contact-info">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-details">
+                        <h3>Email</h3>
+                        <a href="mailto:{{ about.email }}">{{ about.email }}</a>
+                    </div>
+                </div>
+
+                {% if about.phone %}
+                <div class="contact-info">
+                    <div class="contact-icon">📱</div>
+                    <div class="contact-details">
+                        <h3>Phone</h3>
+                        <p>{{ about.phone }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="contact-info">
+                    <div class="contact-icon">📄</div>
+                    <div class="contact-details">
+                        <h3>Resume</h3>
+                        {% if about.resume %}
+                            <a href="{{ about.resume.url }}" class="resume-btn" download>Download CV</a>
+                        {% else %}
+                            <p style="color: #64748b; font-size: 0.9rem;">Not available</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if about.location %}
+                <div class="contact-info">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-details">
+                        <h3>Location</h3>
+                        <p>{{ about.location }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            {% else %}
+                <p>No contact details provided.</p>
+            {% endif %}
+        </div>
+
+        <div class="contact-card reveal">
+            <h2>Send a Message</h2>
+            <form method="POST" action="#">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required pattern="[A-Za-z\s]+" title="Letters only">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" required placeholder="How can I help you?"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+{% endblock %}
