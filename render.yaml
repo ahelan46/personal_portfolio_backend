@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: portfolio-web
+    env: python
+    plan: starter
+    branch: main
+    rootDir: portfolio
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: mysite.settings_prod
+      - key: DJANGO_DEBUG
+        value: 'False'
+    # Do NOT store secrets here; set them in Render dashboard as secure environment variables
+    postDeploy:
+      - command: python manage.py migrate
+      - command: python manage.py collectstatic --noinput
+
+# If you want a managed Postgres service, create it via Render UI and attach its
+# `DATABASE_URL` to this service (Render will set the env var automatically).

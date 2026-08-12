@@ -15,13 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from portfolio.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('portfolio.urls')),
+    path('api/', include('portfolio.api_urls')),
+    path('', home, name='home'),
+    # Catch-all for React SPA routing - serve index.html for all non-API routes
+    re_path(r'^(?!api/)(?!static/).*$', home),
 ]
 
 if settings.DEBUG:

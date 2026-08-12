@@ -2,24 +2,26 @@ from django.contrib import messages
 from django.shortcuts import render,redirect
 from django.views.generic import ListView, DetailView
 from .models import Project, Skill, About
+from django.db import OperationalError
+from django.http import FileResponse, HttpResponse
+from django.conf import settings
+import os
 
 
 def home(request):
-    """Home page view"""
-    featured_projects = Project.objects.all().order_by('-created_at')
-    skills = Skill.objects.all()
+    """Serve React frontend (SPA) from built Vite app"""
+    # Try to serve the built React index.html directly
+    react_index_path = os.path.join(settings.BASE_DIR, 'portfolio', 'static', 'dist', 'index.html')
     
     try:
-        about = About.objects.first()
-    except About.DoesNotExist:
-        about = None
+        if os.path.exists(react_index_path):
+            with open(react_index_path, 'r', encoding='utf-8') as f:
+                return HttpResponse(f.read(), content_type='text/html')
+    except Exception as e:
+        print(f"Error loading React index: {e}")
     
-    context = {
-        'featured_projects': featured_projects,
-        'skills': skills,
-        'about': about,
-    }
-    return render(request, 'portfolio/home.html', context)
+    # Fallback if React app not built
+    return HttpResponse("<h1>Portfolio App Loading...</h1><p>React app is not built yet. Please run: npm run build</p>")
 
 
 class ProjectListView(ListView):

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="My Portfolio - Showcase of projects and skills">
     <title>{% block title %}My Portfolio{% endblock %}</title>
@@ -13,13 +14,15 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+
         }
-        
-        html, body {
+
+        html,
+        body {
             width: 100%;
             height: auto;
         }
-        
+
         body {
             background-color: #F8FAFC;
             color: #1F2937;
@@ -27,28 +30,28 @@
             flex-direction: column;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-           
-            background-image:none;
+
+            background-image: none;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
-            
+
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
+
         header {
-            background-color:#0F172A;
+            background-color: #0F172A;
             color: white;
             padding: 1rem 0;
             position: sticky;
             top: 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             z-index: 100;
             width: 100%;
         }
-        
+
         nav {
             max-width: 1200px;
             margin: 0 auto;
@@ -60,7 +63,7 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-        
+
         nav a {
             color: white;
             text-decoration: none;
@@ -68,11 +71,11 @@
             transition: opacity 0.3s;
             font-size: 1rem;
         }
-        
+
         nav a:hover {
             opacity: 0.8;
         }
-        
+
         .hamburger {
             display: none;
             flex-direction: column;
@@ -80,7 +83,7 @@
             gap: 6px;
             margin: 0;
         }
-        
+
         .hamburger span {
             width: 25px;
             height: 3px;
@@ -88,32 +91,32 @@
             transition: 0.3s;
             border-radius: 2px;
         }
-        
+
         .hamburger.active span:nth-child(1) {
             transform: rotate(45deg) translate(10px, 10px);
         }
-        
+
         .hamburger.active span:nth-child(2) {
             opacity: 0;
         }
-        
+
         .hamburger.active span:nth-child(3) {
             transform: rotate(-45deg) translate(7px, -7px);
         }
-        
+
         .nav-right {
             display: flex;
             align-items: center;
             gap: 2rem;
             flex-wrap: wrap;
         }
-        
+
         .social-icons {
             display: flex;
             gap: 1rem;
             align-items: center;
         }
-        
+
         .social-icons a {
             display: inline-flex;
             align-items: center;
@@ -129,18 +132,18 @@
             border: 1.5px solid white;
             margin: 0;
         }
-        
+
         .social-icons a:hover {
             background-color: white;
             color: #667eea;
             opacity: 1;
         }
-        
+
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -148,28 +151,33 @@
             margin-top: 2rem;
             margin-bottom: 2rem;
         }
-        
+
         main {
             flex: 1;
         }
-        
+
         footer {
             background-color: #020617;
             color: #9CA3AF;
-                  /* reduced height */
+            /* reduced height */
             display: flex;
-            align-items: center;       /* vertical center */
-            justify-content: center;   /* center paragraph */
-            position: relative; 
-            overflow: visible; 
+            align-items: center;
+            /* vertical center */
+            justify-content: center;
+            /* center paragraph */
+            position: relative;
+            overflow: visible;
             padding: 10px 0;
-      /* needed for right toggle */
+            /* needed for right toggle */
         }
+
         footer p {
             margin: 0;
             text-align: center;
-            font-size: 0.9rem;   /* optional: slightly smaller */
+            font-size: 0.9rem;
+            /* optional: slightly smaller */
         }
+
         footer #theme-toggle {
             position: absolute;
             right: 35px;
@@ -183,24 +191,24 @@
             font-weight: 500;
             display: inline-block;
             padding: 0.75rem 1.5rem;
-           
+
             color: white;
             text-decoration: none;
             border: none;
-            
+
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .btn:hover {
             background-color: #1D4ED8;
         }
-        
+
         .btn-secondary {
             background-color: #E5E7EB;
             color: #1F2937;
         }
-        
+
         .btn-secondary:hover {
             background-color: #D1D5DB;
         }
@@ -208,7 +216,8 @@
         .social-icons a {
             border: 1.5px solid #38BDF8;
             color: #38BDF8;
-            position: relative; /* needed for the tooltip */
+            position: relative;
+            /* needed for the tooltip */
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -224,11 +233,13 @@
 
         /* Tooltip for icon names */
         .social-icons a::after {
-            content: attr(data-tooltip); /* grabs the title attribute */
+            content: attr(data-tooltip);
+            /* grabs the title attribute */
             position: absolute;
             background-color: #38BDF8;
             color: #020617;
-            top: 120%; /* above the icon */
+            top: 120%;
+            /* above the icon */
             left: 50%;
             transform: translateX(-50%) translateY(10px);
             padding: 3px 8px;
@@ -237,7 +248,8 @@
             white-space: nowrap;
             opacity: 0;
             pointer-events: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* optional subtle shadow */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            /* optional subtle shadow */
             transition: all 0.3s ease;
         }
 
@@ -245,161 +257,170 @@
         .social-icons a:hover {
             background-color: white;
             color: #667eea;
-            transform: translateY(-5px); /* move the icon up */
+            transform: translateY(-5px);
+            /* move the icon up */
         }
 
         .social-icons a:hover::after {
             opacity: 1;
-            transform: translateX(-50%) translateY(0); /* move tooltip into view */
+            transform: translateX(-50%) translateY(0);
+            /* move tooltip into view */
         }
 
-       #theme-toggle {
-    position: relative; /* required for tooltip */
-    
-    width: 45px;
-    height: 45px;
-    background-color: transparent;
-    color: yellow;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.5rem;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
+        #theme-toggle {
+            position: relative;
+            /* required for tooltip */
 
-#theme-toggle:hover {
-    
-    color: #FFA500;
-}
+            width: 45px;
+            height: 45px;
+            background-color: transparent;
+            color: yellow;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
 
-/* Tooltip */
-#theme-toggle::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    top: -38px;                 /* 👈 move ABOVE the button */
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background-color: white;
-    color: black;
-    padding: 4px 8px;
-    font-size: 0.75rem;
-    border-radius: 4px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 999;              /* 👈 important */
-}
+        #theme-toggle:hover {
 
-/* Show tooltip on hover */
+            color: #FFA500;
+        }
 
-#theme-toggle:hover::after {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
+        /* Tooltip */
+        #theme-toggle::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -38px;
+            /* 👈 move ABOVE the button */
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background-color: white;
+            color: black;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 999;
+            /* 👈 important */
+        }
 
+        /* Show tooltip on hover */
 
-body.dark-mode #theme-toggle {
-    color: #ffd700;
-}
-/* Dark mode styles */
-body.dark-mode {
-    background-color: #020617;
-    color: #E5E7EB;
-    background-image: none; /* remove background image if needed */
-}
-
-body.dark-mode header {
-    background: linear-gradient(135deg, #333 0%, #555 100%);
-}
-
-body.dark-mode footer {
-    background-color: #222;
-    color: #e0e0e0;
-}
-
-body.dark-mode .btn {
-    background-color: #555;
-}
-
-body.dark-mode .btn:hover {
-    background-color: #777;
-}
-
-body.dark-mode .btn-secondary {
-    background-color: #444;
-}
-
-body.dark-mode .btn-secondary:hover {
-    background-color: #666;
-}
-
-body.dark-mode .social-icons a {
-    border: 1.5px solid #e0e0e0;
-}
-
-body.dark-mode .social-icons a:hover {
-    background-color: #e0e0e0;
-    color: #333;
-}
-body.dark-mode #theme-toggle {
-    color: #ffd700;
-}
-
-body.dark-mode main {
-    background-color: transparent;
-}
-/* ===== NEON NAV HOVER EFFECT (LIKE IMAGE) ===== */
-
-.nav-links a {
-    position: relative;
-    padding: 6px 4px;
-    color: #E5E7EB;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-/* underline */
-.nav-links a::after {
-    background: #38BDF8;
-    box-shadow: 0 0 6px rgba(56,189,248,0.6);
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -6px;
-    width: 0%;
-    height: 2px;
-    transition: width 0.35s ease;
-}
-
-/* hover glow */
-.nav-links a:hover {
-    color: #38BDF8;
-    text-shadow: 0 0 6px rgba(56,189,248,0.5);
-}
-
-/* underline animation */
-.nav-links a:hover::after {
-    width: 100%;
-}
+        #theme-toggle:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
 
-        
+        body.dark-mode #theme-toggle {
+            color: #ffd700;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #020617;
+            color: #E5E7EB;
+            background-image: none;
+            /* remove background image if needed */
+        }
+
+        body.dark-mode header {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+        }
+
+        body.dark-mode footer {
+            background-color: #222;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .btn {
+            background-color: #555;
+        }
+
+        body.dark-mode .btn:hover {
+            background-color: #777;
+        }
+
+        body.dark-mode .btn-secondary {
+            background-color: #444;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #666;
+        }
+
+        body.dark-mode .social-icons a {
+            border: 1.5px solid #e0e0e0;
+        }
+
+        body.dark-mode .social-icons a:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        body.dark-mode #theme-toggle {
+            color: #ffd700;
+        }
+
+        body.dark-mode main {
+            background-color: transparent;
+        }
+
+        /* ===== NEON NAV HOVER EFFECT (LIKE IMAGE) ===== */
+
+        .nav-links a {
+            position: relative;
+            padding: 6px 4px;
+            color: #E5E7EB;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        /* underline */
+        .nav-links a::after {
+            background: #38BDF8;
+            box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            width: 0%;
+            height: 2px;
+            transition: width 0.35s ease;
+        }
+
+        /* hover glow */
+        .nav-links a:hover {
+            color: #38BDF8;
+            text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+        }
+
+        /* underline animation */
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+
+
         @media (max-width: 1024px) {
             nav {
                 padding: 0 1.5rem;
             }
         }
-        
+
         @media (max-width: 768px) {
             .hamburger {
                 display: flex;
             }
-            
+
             .nav-right {
                 display: none;
                 flex-direction: column;
@@ -409,82 +430,82 @@ body.dark-mode main {
                 right: 0;
                 background-color: #0F172A;
                 padding: 1.5rem;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
                 width: 100%;
                 gap: 1rem;
                 z-index: 99;
             }
-            
+
             .nav-right.active {
                 display: flex;
             }
-            
+
             .nav-links {
                 display: flex;
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             nav a {
                 margin: 0.5rem 0;
                 font-size: 0.95rem;
             }
-            
+
             .container {
                 padding: 1rem;
                 margin: 1rem auto;
             }
-            
+
             .social-icons {
                 flex-wrap: wrap;
                 justify-content: flex-start;
             }
-            
+
             header {
                 padding: 0.75rem 0;
             }
         }
-        
+
         @media (max-width: 480px) {
             nav {
                 padding: 0 1rem;
             }
-            
+
             .logo {
                 font-size: 1.2rem;
             }
-            
+
             nav a {
                 font-size: 0.9rem;
             }
-            
+
             .social-icons a {
                 width: 30px;
                 height: 30px;
                 font-size: 0.9rem;
             }
-            
+
             .social-icons a::after {
                 font-size: 0.7rem;
             }
-            
+
             footer {
                 padding: 8px 0;
                 flex-wrap: wrap;
             }
-            
+
             footer p {
                 font-size: 0.75rem;
                 padding: 0 0.5rem;
             }
-            
+
             #theme-toggle {
                 width: 40px;
                 height: 40px;
                 right: 15px;
                 font-size: 1.2rem;
             }
-            
+
             .btn {
                 padding: 0.6rem 1.2rem;
                 font-size: 0.9rem;
@@ -493,10 +514,12 @@ body.dark-mode main {
     </style>
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
     <header>
         <nav class="hed">
-            <div class="logo"><a href="{% url 'portfolio:home' %}" style="color: white; text-decoration: none;">My Portfolio</a></div>
+            <div class="logo"><a href="{% url 'portfolio:home' %}" style="color: white; text-decoration: none;">My
+                    Portfolio</a></div>
             <div class="hamburger" id="hamburger">
                 <span></span>
                 <span></span>
@@ -511,10 +534,11 @@ body.dark-mode main {
                     <a href="{% url 'portfolio:contact' %}">Contact</a>
                 </div>
                 <div class="social-icons">
-                    <a href="https://github.com/yourprofile" target="_blank" data-tooltip="GitHub">
+                    <a href="https://github.com/ahelan46" target="_blank" data-tooltip="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
-                    <a href="https://linkedin.com/in/yourprofile" target="_blank" data-tooltip="LinkedIn">
+                    <a href="https://www.linkedin.com/messaging/thread/2-NjczZjM4NWItZjE1MS00NDQyLThkZTYtMWExODIwNDAxYmFkXzEwMA==/"
+                        target="_blank" data-tooltip="LinkedIn">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
                     <a href="https://instagram.com/yourprofile" target="_blank" data-tooltip="Instagram">
@@ -530,33 +554,34 @@ body.dark-mode main {
 
     <main class="container">
         {% block content %}
-        
+
         {% endblock %}
     </main>
 
     <footer>
-        <p>&copy; <span id="current-year"></span> My Portfolio. All rights reserved.</p>
+        <p>&copy; {% now "Y" %} My Portfolio. All rights reserved.</p>
 
-       <div id="theme-toggle" data-tooltip="Dark / Light Mode">
-    <i class="fas fa-moon"></i>
-</div>
+        <div id="theme-toggle" data-tooltip="Dark / Light Mode">
+            <i class="fas fa-moon"></i>
+        </div>
 
-</div>
+        </div>
     </footer>
 </body>
+
 </html>
 <script>
-    document.getElementById("current-year").textContent = new Date().getFullYear();
 
+    // document.getElementById("current-year").textContent = new Date().getFullYear();
     // Mobile Hamburger Menu Toggle
     const hamburger = document.getElementById('hamburger');
     const navRight = document.getElementById('navRight');
-    
+
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
         navRight.classList.toggle('active');
     });
-    
+
     // Close menu when a link is clicked
     const navLinks = navRight.querySelectorAll('a');
     navLinks.forEach(link => {
@@ -570,7 +595,7 @@ body.dark-mode main {
     const toggle = document.getElementById('theme-toggle');
 
     // Check saved mode in localStorage
-    if(localStorage.getItem('theme') === 'dark') {
+    if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
         toggle.innerHTML = '<i class="fas fa-sun"></i>';
     }
@@ -579,7 +604,7 @@ body.dark-mode main {
         document.body.classList.toggle('dark-mode');
 
         // Change icon
-        if(document.body.classList.contains('dark-mode')){
+        if (document.body.classList.contains('dark-mode')) {
             toggle.innerHTML = '<i class="fas fa-sun"></i>';
             localStorage.setItem('theme', 'dark');
         } else {

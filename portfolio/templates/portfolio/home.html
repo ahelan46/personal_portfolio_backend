@@ -1,320 +1,964 @@
 {% extends 'portfolio/base.html' %}
+{% load portfolio_tags %}
+{% load static %}
 
 {% block title %}Home - My Portfolio{% endblock %}
 
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<!-- Devicon CDN -->
+<link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
 
 <style>
-/* ================= GLOBAL & 3D SETUP ================= */
-html { scroll-behavior: smooth; }
-body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    background-color: #0f172a; 
-    color: #f8fafc;
-    font-family: 'Inter', sans-serif;
-}
+    /* ================= GLOBAL & 3D SETUP ================= */
+    html {
+        scroll-behavior: smooth;
+    }
 
-/* ================= SECTIONS ================= */
-.page-section {
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5rem 1.5rem;
-}
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: #0f172a;
+        color: #f8fafc;
+        font-family: 'Inter', sans-serif;
+    }
 
-.hero {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    color: white;
-    border-radius: 30px;
-    padding: 3.5rem;
-    max-width: 1100px;
-    width: 100%;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.05);
-}
+    /* Animation for the rotating text */
+    /* Animation for the rotating text */
+    .rotating-text {
+        display: inline-block;
+        transition: all 0.5s ease-in-out;
+        color: #38bdf8;
+        /* Keeping your cyan theme */
+        min-width: 250px;
+        /* Prevents layout jumping */
+    }
 
-.hero-layout {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 3rem;
-}
+    .fade-out {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 
-.hero-text h1 {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    font-weight: 800;
-    margin-bottom: 1rem;
-    background: linear-gradient(to right, #fff, #38bdf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+    .fade-in {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-/* ================= BUTTONS ================= */
-.cta-buttons { 
-    display: flex; 
-    gap: 1.5rem; 
-    margin-top: 2rem;
-}
+    .rotating-text {
+        display: inline-block;
+        color: #38bdf8;
+        font-weight: 800;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        opacity: 1;
+        /* Ensure it is visible at start */
+        transform: translateY(0);
+        min-width: 200px;
+        /* Adjust based on your longest word */
+    }
 
-.btn-3d {
-    padding: 0.8rem 1.8rem;
-    background: #2563eb;
-    color: white;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: inline-block;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-}
+    /* When the script triggers a change, this class is added */
+    .text-hidden {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 
-.btn-3d:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(37,99,235,0.4);
-}
+    /* Container for the rotating text */
+    .roles-container {
+        display: inline-block;
+        height: 1.2em;
+        /* Matches the line height of your H1 */
+        vertical-align: bottom;
+        overflow: hidden;
+        /* This hides the other names until they slide in */
+        margin-left: 10px;
+    }
 
-.btn-secondary { background: #334155; }
+    .roles-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        animation: slide-roles 12s cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+        color: #38bdf8;
 
-.view-all-container {
-    text-align: center;
-    margin-top: 4rem;
-    width: 100%;
-}
+        /* SHARPENING FIXES */
+        text-shadow: 0 0 5px rgba(238, 24, 53, 0.805);
+        /* Reduced blur from 15px to 5px */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+        /* Forces GPU rendering for sharpness */
+        will-change: transform;
+    }
 
-/* ================= PROJECT CARDS ================= */
-.section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 4rem;
-    color: #38bdf8;
-}
+    .roles-list li {
+        line-height: 1.2em;
+        height: 1.2em;
+        font-weight: 800;
+        /* Ensure no sub-pixel blur */
+        transform: translateZ(0);
+    }
 
-.projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.5rem;
-    width: 100%;
-    max-width: 1200px;
-}
+    /* The Animation Logic */
+    /* 4 items = 25% each. 
+   We stay at each word for a bit, then slide. */
+    @keyframes slide-roles {
 
-.project-card {
-    background: #1e293b;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
+        0%,
+        20% {
+            transform: translateY(0);
+        }
 
-.project-image { width: 100%; height: 200px; object-fit: cover; }
-.project-content { padding: 1.5rem; }
-.project-content h3 { color: #38bdf8; margin-bottom: 0.5rem; }
-.project-content p { color: #94a3b8; margin-bottom: 1.5rem; font-size: 0.95rem; }
+        /* Name 1 */
+        25%,
+        45% {
+            transform: translateY(-1.2em);
+        }
 
-/* ================= HERO IMAGE ================= */
-.hero-image img {
-    width: 280px;
-    height: 280px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 6px solid rgba(56,189,248,0.3);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-}
+        /* Developer */
+        50%,
+        70% {
+            transform: translateY(-2.4em);
+        }
 
-/* ================= SKILLS ================= */
-.skill-tag {
-    background: #1e293b;
-    padding: 1.5rem;
-    border-radius: 15px;
-    text-align: center;
-    font-weight: 600;
-    color: #38bdf8;
-    border: 1px solid rgba(56,189,248,0.1);
-}
+        /* Creator */
+        75%,
+        95% {
+            transform: translateY(-3.6em);
+        }
 
-/* ================= PREMIUM CONTACT SECTION ================= */
-/* .contact-section {
+        /* 3D Animator */
+        100% {
+            transform: translateY(-4.8em);
+        }
+
+        /* Back to Name 1 (Loop) */
+    }
+
+    /* Ensure the H1 doesn't wrap awkwardly on small screens */
+    .hero-title {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    /* ================= SECTIONS ================= */
+    .page-section {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5rem 1.5rem;
+    }
+
+    .hero {
+        /* User requested to remove the "transparent container" look */
+        background: transparent;
+        color: white;
+        /* border-radius: 30px; */
+        padding: 0;
+        /* Removed padding to maximize space usage */
+        max-width: 1200px;
+        /* Increased slightly */
+        width: 100%;
+        box-shadow: none;
+        /* Removed shadow */
+        border: none;
+        /* Removed border */
+    }
+
+    .hero-layout {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        /* Increased gap slightly as requested "center some space" */
+    }
+
+    .hero-text h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, #fff, #38bdf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* ================= HERO REDESIGN (ORBIT) ================= */
+    .hero-visual {
+        position: relative;
+        width: 450px;
+        height: 450px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Pulling it slightly to the left as requested */
+        margin-left: -2rem;
+    }
+
+    .profile-container {
+        width: 220px;
+        height: 220px;
+        position: relative;
+        z-index: 10;
+        border-radius: 50%;
+        padding: 0;
+        /* Removed background/shadow "extra container" */
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .profile-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        /* Removed border to be cleaner */
+        border: none;
+        box-shadow: 0 0 40px rgba(56, 189, 248, 0.2);
+        /* Soft glow directly on image */
+    }
+
+    /* ================= BUTTONS ================= */
+    .cta-buttons {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .btn-3d {
+        padding: 0.8rem 1.8rem;
+        background: #2563eb;
+        color: white;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .btn-3d:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-secondary {
+        background: #334155;
+    }
+
+    .view-all-container {
+        text-align: center;
+        margin-top: 4rem;
+        width: 100%;
+    }
+
+    /* ================= PROJECT CARDS ================= */
+    /* ================= LATEST WORKS TIMELINE STYLE ================= */
+
+    /* ================= IMPROVED ZIGZAG TIMELINE ================= */
+
+    .latest-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        /* Centered as requested */
+        margin-bottom: 4rem;
+        color: #38bdf8;
+        /* Cyan color explicitly requested */
+    }
+
+    .latest-list {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 6rem;
+        /* Increased gap for better breathing room */
+    }
+
+    /* Vertical line that runs through the whole section */
+    .latest-list::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(to bottom, transparent, #38bdf8 10%, #38bdf8 90%, transparent);
+        z-index: 0;
+    }
+
+    .latest-item {
+        display: grid;
+        grid-template-columns: 1fr 80px 1fr;
+        /* Equal columns for symmetry */
+        align-items: start;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 8rem;
+        /* Spacing between projects */
+    }
+
+    .latest-image {
+        width: 100%;
+        margin: 0;
+        line-height: 0;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .4);
+        transition: transform 0.4s ease;
+    }
+
+    .latest-image:hover {
+        transform: scale(1.02);
+    }
+
+    .latest-image img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Center Dot Styling */
+    .latest-line-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 20px;
+    }
+
+    .latest-dot {
+        width: 16px;
+        height: 16px;
+        background: #38bdf8;
+        border-radius: 50%;
+        box-shadow: 0 0 20px #38bdf8;
+        border: 4px solid #0f172a;
+    }
+
+    /* Content Styling */
+    .latest-content {
+        padding-top: 0;
+        margin-top: -5px;
+        /* Slight offset to align text 'x-height' with image top */
+    }
+
+    .latest-content h3 {
+        font-size: 1.8rem;
+        color: #38bdf8;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Zig-Zag Logic */
+
+    /* ODD items: Image Left, Content Right */
+    .latest-item:nth-child(odd) .latest-image {
+        grid-column: 1;
+    }
+
+    .latest-item:nth-child(odd) .latest-content {
+        grid-column: 3;
+        text-align: left;
+    }
+
+    /* EVEN items: Content Left, Image Right */
+    .latest-item:nth-child(even) .latest-image {
+        grid-column: 3;
+    }
+
+    .latest-item:nth-child(even) .latest-content {
+        grid-column: 1;
+        text-align: right;
+    }
+
+    /* .latest-item:nth-child(even) .latest-tags {
+    justify-content: flex-end;
+} */
+
+    /* Responsive Fix for Mobile */
+
+    @media (max-width: 992px) {
+
+        /* Move the vertical line to the left side */
+        .latest-list::before {
+            left: 20px;
+            transform: none;
+        }
+
+        .latest-item,
+        .latest-item:nth-child(even) {
+            grid-template-columns: 40px 1fr;
+            /* Timeline dot column + Content column */
+            gap: 1.5rem;
+            text-align: left !important;
+            /* Force left align for even items */
+        }
+
+        /* Stack Image and Content in the second column */
+        .latest-item:nth-child(odd) .latest-image,
+        .latest-item:nth-child(even) .latest-image,
+        .latest-item:nth-child(odd) .latest-content,
+        .latest-item:nth-child(even) .latest-content {
+            grid-column: 2;
+        }
+
+        .latest-item:nth-child(even) .latest-tags {
+            justify-content: flex-start;
+            /* Reset tag alignment */
+        }
+
+        /* Keep the dot on the left line */
+        .latest-line-wrap {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+            /* Stretch dot to cover both image and text height */
+            align-items: flex-start;
+            padding-top: 10px;
+        }
+
+        .latest-image img {
+            height: auto;
+            /* Let images scale naturally on mobile */
+            max-height: 300px;
+        }
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 4rem;
+        color: #38bdf8;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    .project-card {
+        background: #1e293b;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .project-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .project-content {
+        padding: 1.5rem;
+    }
+
+    .project-content h3 {
+        color: #38bdf8;
+        margin-bottom: 0.5rem;
+    }
+
+    .project-content p {
+        color: #94a3b8;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    /* ================= HERO IMAGE ================= */
+    .hero-image img {
+        width: 280px;
+        height: 280px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 6px solid rgba(56, 189, 248, 0.3);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ================= HERO REDESIGN (ORBIT) ================= */
+    .hero-visual {
+        position: relative;
+        width: 450px;
+        height: 450px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Pulling it slightly to the left as requested */
+        margin-left: -2rem;
+    }
+
+    .profile-container {
+        width: 220px;
+        height: 220px;
+        position: relative;
+        z-index: 10;
+        border-radius: 50%;
+        padding: 0;
+        /* Removed background/shadow "extra container" */
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .profile-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        /* Removed border to be cleaner */
+        border: none;
+        box-shadow: 0 0 40px rgba(56, 189, 248, 0.2);
+        /* Soft glow directly on image */
+    }
+
+    /* Orbits */
+    .orbit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        border: 1px dashed rgba(56, 189, 248, 0.2);
+        pointer-events: none;
+        /* Let clicks pass through */
+    }
+
+    .orbit-inner {
+        width: 300px;
+        height: 300px;
+        animation: native-spin 20s linear infinite;
+        transform-origin: center;
+    }
+
+    .orbit-outer {
+        width: 420px;
+        height: 420px;
+        border: 1px solid rgba(56, 189, 248, 0.1);
+        animation: native-spin-rev 25s linear infinite;
+        transform-origin: center;
+    }
+
+    /* Floating Icons on Orbit */
+    .orbit-icon {
+        position: absolute;
+        width: 45px;
+        height: 45px;
+        background: #1e293b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #38bdf8;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+
+        /* Center the icon on the line - standard tech */
+        top: 0;
+        left: 50%;
+        margin-left: -22.5px;
+        margin-top: -22.5px;
+    }
+
+    .orbit-inner .orbit-icon {
+        animation: icon-counter-spin 20s linear infinite;
+    }
+
+    .orbit-outer .orbit-icon {
+        animation: icon-counter-spin-rev 25s linear infinite;
+    }
+
+    /* Specific Positions on the ring */
+    /* Top */
+    .pos-1 {
+        top: 0;
+        left: 50%;
+    }
+
+    /* Right */
+    .pos-2 {
+        top: 50%;
+        left: 100%;
+        margin-left: -22.5px;
+        margin-top: -22.5px;
+    }
+
+    /* Bottom */
+    .pos-3 {
+        top: 100%;
+        left: 50%;
+        margin-left: -22.5px;
+        margin-top: -22.5px;
+    }
+
+    /* Left */
+    .pos-4 {
+        top: 50%;
+        left: 0%;
+        margin-left: -22.5px;
+        margin-top: -22.5px;
+    }
+
+    /* Diagonals for outer ring */
+    .pos-5 {
+        top: 15%;
+        left: 85%;
+    }
+
+    .pos-6 {
+        top: 85%;
+        left: 85%;
+    }
+
+    .pos-7 {
+        top: 85%;
+        left: 15%;
+    }
+
+    .pos-8 {
+        top: 15%;
+        left: 15%;
+    }
+
+    @keyframes native-spin {
+        from {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    @keyframes native-spin-rev {
+        from {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+
+        to {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+    }
+
+    @keyframes icon-counter-spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(-360deg);
+        }
+    }
+
+    @keyframes icon-counter-spin-rev {
+        from {
+            transform: rotate(-360deg);
+        }
+
+        to {
+            transform: rotate(0deg);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .hero-visual {
+            width: 350px;
+            height: 350px;
+            margin-bottom: 2rem;
+        }
+
+        .orbit-inner {
+            width: 240px;
+            height: 240px;
+        }
+
+        .orbit-outer {
+            width: 340px;
+            height: 340px;
+        }
+
+        .profile-container {
+            width: 160px;
+            height: 160px;
+        }
+    }
+
+    /* ================= SKILLS ================= */
+    .skill-tag {
+        background: #1e293b;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        font-weight: 600;
+        color: #38bdf8;
+        border: 1px solid rgba(56, 189, 248, 0.1);
+    }
+
+    /* ================= PREMIUM CONTACT SECTION ================= */
+    /* .contact-section {
     background: radial-gradient(circle at bottom left, #1e293b, #0f172a);
 } */
 
-.contact-row {
-    display: flex;
-    gap: 3rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
-}
+    .contact-row {
+        display: flex;
+        gap: 3rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+    }
 
-.contact-card {
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 3rem;
-    border-radius: 24px;
-    border: 1px solid rgba(56, 189, 248, 0.1);
-    width: 100%;
-    max-width: 480px;
-    transition: all 0.3s ease;
-}
+    .contact-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 3rem;
+        border-radius: 24px;
+        border: 1px solid rgba(56, 189, 248, 0.1);
+        width: 100%;
+        max-width: 480px;
+        transition: all 0.3s ease;
+    }
 
-.contact-card:hover {
-    border-color: rgba(56, 189, 248, 0.4);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
+    .contact-card:hover {
+        border-color: rgba(56, 189, 248, 0.4);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
 
-.contact-card h3 {
-    font-size: 1.8rem;
-    color: #f8fafc;
-    margin-bottom: 2rem;
-    position: relative;
-    padding-bottom: 12px;
-}
+    .contact-card h3 {
+        font-size: 1.8rem;
+        color: #f8fafc;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 12px;
+    }
 
-.contact-card h3::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: #38bdf8;
-    border-radius: 10px;
-}
+    .contact-card h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: #38bdf8;
+        border-radius: 10px;
+    }
 
 
-/* Enhanced Resume Styling */
-.resume-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(56, 189, 248, 0.1);
-    color: #38bdf8;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    transition: all 0.3s ease;
-}
+    /* Enhanced Resume Styling */
+    .resume-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(56, 189, 248, 0.1);
+        color: #38bdf8;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        transition: all 0.3s ease;
+    }
 
-.resume-link:hover {
-    background: #38bdf8;
-    color: #0f172a;
-    transform: translateY(-2px);
-}
+    .resume-link:hover {
+        background: #38bdf8;
+        color: #0f172a;
+        transform: translateY(-2px);
+    }
 
-.contact-info-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
+    .contact-info-text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
 
-.contact-info-text label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: #94a3b8;
-    letter-spacing: 1px;
-}
-/* Professional Info Items */
-.contact-info {
-    display: flex;
-    gap: 1.2rem;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding: 1.2rem;
-    background: rgba(15, 23, 42, 0.4);
-    border-radius: 16px;
-    transition: transform 0.3s ease, background 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-}
+    .contact-info-text label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 1px;
+    }
 
-.contact-info:hover {
-    background: rgba(56, 189, 248, 0.08);
-    transform: translateX(8px);
-}
+    /* Professional Info Items */
+    .contact-info {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1.2rem;
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: 16px;
+        transition: transform 0.3s ease, background 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+    }
 
-.contact-info .icon-box {
-    font-size: 1.5rem;
-    min-width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(56, 189, 248, 0.1);
-    border-radius: 12px;
-}
+    .contact-info:hover {
+        background: rgba(56, 189, 248, 0.08);
+        transform: translateX(8px);
+    }
 
-.contact-info p {
-    margin: 0;
-    color: #cbd5e1;
-    font-size: 1rem;
-}
+    .contact-info .icon-box {
+        font-size: 1.5rem;
+        min-width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(56, 189, 248, 0.1);
+        border-radius: 12px;
+    }
 
-/* Modern Form Elements */
-.form-group { margin-bottom: 1.5rem; }
+    .contact-info p {
+        margin: 0;
+        color: #cbd5e1;
+        font-size: 1rem;
+    }
 
-.form-group label {
-    display: block;
-    margin-bottom: 0.6rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+    /* Modern Form Elements */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
 
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 1rem;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: #0f172a;
-    color: #fff;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
+    .form-group label {
+        display: block;
+        margin-bottom: 0.6rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #38bdf8;
-    background: #1e293b;
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
-}
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #0f172a;
+        color: #fff;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
 
-.btn-full { width: 100%; margin-top: 1rem; }
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #38bdf8;
+        background: #1e293b;
+        box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+    }
 
-/* ================= RESPONSIVE ================= */
-@media (max-width: 768px) {
-    .hero-layout { flex-direction: column-reverse; text-align: center; }
-    .cta-buttons { flex-direction: column; }
-    .contact-card { padding: 2rem; }
-}
+    .btn-full {
+        width: 100%;
+        margin-top: 1rem;
+    }
 
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 768px) {
+        .hero-layout {
+            flex-direction: column-reverse;
+            text-align: center;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+        }
+
+        .contact-card {
+            padding: 2rem;
+        }
+    }
+
+    /* ================= TECH TAGS - ICONS ================= */
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        /* Added space above icons */
+        margin-bottom: 2rem;
+        justify-content: flex-start;
+    }
+
+    .tech-icon-wrapper {
+        position: relative;
+        display: inline-block;
+        /* For tooltip logic if needed, but using title for now is safer */
+    }
+
+    .tech-icon {
+        font-size: 2rem;
+        /* Nice big icons */
+        color: #94a3b8;
+        /* Muted default */
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    /* Hover Effect */
+    .tech-icon:hover {
+        color: #38bdf8;
+        /* Cyan glow on hover */
+        transform: translateY(-5px) scale(1.1);
+        filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+    }
+
+    /* Custom Tooltip */
+    .tech-icon-wrapper::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        background: rgba(15, 23, 42, 0.9);
+        color: #38bdf8;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        z-index: 10;
+        margin-bottom: 8px;
+        /* Spacing from icon */
+        backdrop-filter: blur(4px);
+    }
+
+    .tech-icon-wrapper:hover::after {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+{% load portfolio_tags %}
 
 <div class="page-section hero-section">
     <div class="hero" data-aos="fade-up">
         <div class="hero-layout">
             <div class="hero-text">
                 {% if about %}
-                    <h1>Hi, I'm {{ about.name }}</h1>
-                    <p>{{ about.bio|truncatewords:30 }}</p>
+                <h1>Hi, I'm <span id="typewriter" style="color: #38bdf8;"></span></h1>
+                <p>{{ about.bio|truncatewords:30 }}</p>
                 {% else %}
-                    <h1>Welcome to My Portfolio</h1>
-                    <p>Showcasing my projects and skills with modern web technologies.</p>
+                <h1>Welcome to My Portfolio</h1>
+                <p>Showcasing my projects and skills with modern web technologies.</p>
                 {% endif %}
 
                 <div class="cta-buttons">
@@ -323,8 +967,28 @@ body {
                 </div>
             </div>
 
-            <div class="hero-image">
-                <img src="/media/WhatsApp Image 2026-01-14 at 1.53.18 PM.jpeg" alt="Profile Photo">
+            <div class="hero-visual">
+                <!-- Center Profile -->
+                <div class="profile-container">
+                    <img src="{% static 'ahelan.jpg.png' %}" alt="Profile Photo"
+                        class="profile-img">
+                </div>
+
+                <!-- Inner Orbit Ring -->
+                <div class="orbit orbit-inner">
+                    <div class="orbit-icon pos-1"><i class="devicon-python-plain"></i></div>
+                    <div class="orbit-icon pos-2"><i class="devicon-django-plain"></i></div>
+                    <div class="orbit-icon pos-3"><i class="devicon-javascript-plain"></i></div>
+                    <div class="orbit-icon pos-4"><i class="devicon-html5-plain"></i></div>
+                </div>
+
+                <!-- Outer Orbit Ring -->
+                <div class="orbit orbit-outer">
+                    <div class="orbit-icon pos-5"><i class="devicon-react-original"></i></div>
+                    <div class="orbit-icon pos-6"><i class="devicon-css3-plain"></i></div>
+                    <div class="orbit-icon pos-7"><i class="devicon-bootstrap-plain"></i></div>
+                    <div class="orbit-icon pos-8"><i class="devicon-git-plain"></i></div>
+                </div>
             </div>
         </div>
     </div>
@@ -332,28 +996,65 @@ body {
 
 {% if featured_projects %}
 <div class="page-section projects-section">
-    <div class="section-content" style="width: 100%; max-width: 1200px;">
-        <h2 class="section-title" data-aos="fade-up">Featured Projects</h2>
 
-        <div class="projects-grid">
+    <div class="latest-works-wrapper">
+
+        <h2 class="latest-title" data-aos="fade-up">
+            featured_projects
+        </h2>
+
+        <div class="latest-list">
             {% for project in featured_projects %}
-            <div class="project-card" data-tilt data-tilt-max="10" data-tilt-speed="1000">
-                {% if project.image %}
-                    <img src="{{ project.image.url }}" class="project-image" alt="{{ project.title }}">
-                {% endif %}
-                <div class="project-content">
+            <div class="latest-item" data-aos="fade-up">
+
+                <div class="latest-image" data-tilt>
+                    {% if project.image %}
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                    {% endif %}
+                </div>
+
+                <div class="latest-line-wrap">
+                    <div class="latest-dot"></div>
+                </div>
+
+                <div class="latest-content">
                     <h3>{{ project.title }}</h3>
-                    <p>{{ project.short_description|truncatewords:15 }}</p>
-                    <a href="{% url 'portfolio:project_detail' project.id %}" class="btn-3d" style="padding: 0.5rem 1rem; font-size: 0.85rem;">View Project</a>
+                    <small>Interactive Web App • 2026</small>
+                    <p>{{ project.short_description|truncatewords:25 }}</p>
+
+                    <div class="tech-tags">
+                        {% if project.technology_used %}
+                        {% for tech in project.technology_used|split %}
+                        <div class="tech-icon-wrapper" data-tooltip="{{ tech|striptags }}">
+                            <i class="{{ tech|tech_icon }} tech-icon"></i>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="tech-icon-wrapper" data-tooltip="Django">
+                            <i class="devicon-django-plain tech-icon"></i>
+                        </div>
+                        <div class="tech-icon-wrapper" data-tooltip="Python">
+                            <i class="devicon-python-plain tech-icon"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'portfolio:project_detail' project.id %}" class="btn-3d">
+                        View Project
+                    </a>
                 </div>
             </div>
             {% endfor %}
         </div>
 
         <div class="view-all-container" data-aos="fade-up">
-            <a href="{% url 'portfolio:project_list' %}" class="btn-3d btn-secondary">View All Projects</a>
+            <a href="{% url 'portfolio:project_list' %}" class="btn-3d btn-secondary">
+                View All Projects
+            </a>
         </div>
+
     </div>
+
 </div>
 {% endif %}
 
@@ -361,7 +1062,8 @@ body {
 <div class="page-section skills-section">
     <div class="section-content" style="width: 100%; max-width: 1200px;">
         <h2 class="section-title" data-aos="fade-up">My Skills</h2>
-        <div class="skills-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem;">
+        <div class="skills-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem;">
             {% for skill in skills|slice:":8" %}
             <div class="skill-tag" data-aos="zoom-in">
                 {{ skill.name }}
@@ -391,18 +1093,23 @@ body {
                 </div>
 
                 <div class="contact-info">
-                <div class="icon-box">📄</div>
-                <div class="contact-info-text">
-                    <label>Resume</label>
-                    {% if about.resume %}
+                    <div class="icon-box">📄</div>
+                    <div class="contact-info-text">
+                        <label>Resume</label>
+                        {% if about.resume %}
                         <a href="{{ about.resume.url }}" class="resume-link" download>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
                             Download CV
                         </a>
-                    {% else %}
+                        {% else %}
                         <p style="color: #64748b; font-size: 0.9rem;">Not available</p>
-                    {% endif %}
-                </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 
@@ -413,7 +1120,8 @@ body {
                     {% csrf_token %}
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" id="full_name" name="full_name" placeholder="Enter your name" required pattern="[A-Za-z\s]+" title="Only letters are allowed">
+                        <input type="text" id="full_name" name="full_name" placeholder="Enter your name" required
+                            pattern="[A-Za-z\s]+" title="Only letters are allowed">
                     </div>
 
                     <div class="form-group">
@@ -437,13 +1145,166 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
 <script>
     AOS.init({ duration: 800, once: true });
-    
+
     VanillaTilt.init(document.querySelectorAll(".project-card"), {
         max: 8,
         speed: 800,
         glare: true,
         "max-glare": 0.2,
     });
+
+    const roleElement = document.getElementById('role-text');
+    // You can add more roles to this list
+    const roles = ["{{ about.name }}", "Developer", "Creator", "3D Animator"];
+    let index = 0;
+
+    function rotateText() {
+        // 1. Start fade out
+        roleElement.classList.add('fade-out');
+
+        setTimeout(() => {
+            // 2. Change the text content
+            index = (index + 1) % roles.length;
+            roleElement.innerText = roles[index];
+
+            // 3. Remove fade out and trigger fade in
+            roleElement.classList.remove('fade-out');
+            roleElement.classList.add('fade-in');
+        }, 500); // This matches the 0.5s CSS transition
+    }
+
+    // Run every 4 seconds
+    setInterval(rotateText, 4000);
+
+
+    const textElement = document.getElementById('typewriter');
+    const words = ["{{ about.name|default:'Ahelan' }}", "Developer", "Creator", "3D Animator"];
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function type() {
+        const currentWord = words[wordIndex];
+
+        if (isDeleting) {
+            textElement.textContent = currentWord.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            textElement.textContent = currentWord.substring(0, charIndex + 1);
+            charIndex++;
+        }
+
+        // Logic for pausing and switching words
+        let typeSpeed = isDeleting ? 50 : 150;
+
+        if (!isDeleting && charIndex === currentWord.length) {
+            typeSpeed = 2000; // Pause at the end of the word
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+            typeSpeed = 500;
+        }
+
+        setTimeout(type, typeSpeed);
+    }
+
+    document.addEventListener('DOMContentLoaded', type);
+
+
+    window.onload = function () {
+        const roleElement = document.getElementById('role-text');
+        // We start the list with your name, then the roles
+        const roles = ["{{ about.name|default:'Ahelan' }}", "Developer", "Creator", "3D Animator"];
+        let index = 0;
+
+        if (roleElement) {
+            setInterval(() => {
+                // 1. Add the hidden class to fade it out
+                roleElement.classList.add('text-hidden');
+
+                setTimeout(() => {
+                    // 2. Change the text while it is invisible
+                    index = (index + 1) % roles.length;
+                    roleElement.innerText = roles[index];
+
+                    // 3. Remove the hidden class to fade it back in
+                    roleElement.classList.remove('text-hidden');
+                }, 500); // Wait 0.5s for the fade-out to finish
+
+            }, 4000); // Repeat every 4 seconds
+        }
+    };
+    /* ================= ZIG-ZAG ALIGNMENT FIX ================= */
+    function fixZigZagAlignment() {
+        const items = document.querySelectorAll('.latest-item');
+        // Only run logic if screen is wider than 992px (Desktop/Tablet landscape)
+        // Matches the CSS media query in @media (max-width: 992px)
+        const isDesktop = window.innerWidth > 992;
+
+        items.forEach((item, index) => {
+            const image = item.querySelector('.latest-image');
+            const dot = item.querySelector('.latest-line-wrap');
+            const content = item.querySelector('.latest-content');
+
+            if (isDesktop) {
+                // Vertically center all items (Image, Dot, Content)
+                item.style.alignItems = 'center';
+
+                // Force everything to Row 1
+                if (image) image.style.gridRow = '1';
+                if (dot) {
+                    dot.style.gridRow = '1';
+                    // Remove top padding so it centers perfectly relative to the row height
+                    dot.style.paddingTop = '0';
+                }
+                if (content) content.style.gridRow = '1';
+
+                // Logical Index: 0, 2, 4... are the "Odd" (Left-Right) items visually
+                // Logical Index: 1, 3, 5... are the "Even" (Right-Left) items visually
+                if (index % 2 === 0) {
+                    // ODD Layout: Image | Line | Content
+                    if (image) {
+                        image.style.gridColumn = '1';
+                        // image.style.textAlign = 'right'; // Image wrapper usually block
+                    }
+                    if (dot) {
+                        dot.style.gridColumn = '2';
+                    }
+                    if (content) {
+                        content.style.gridColumn = '3';
+                        content.style.textAlign = 'left';
+                    }
+                } else {
+                    // EVEN Layout: Content | Line | Image
+                    if (content) {
+                        content.style.gridColumn = '1';
+                        // User requested fix for left side content alignment. 
+                        // Switching to 'left' for better readability and standard alignment.
+                        content.style.textAlign = 'left';
+                    }
+                    if (dot) {
+                        dot.style.gridColumn = '2';
+                    }
+                    if (image) {
+                        image.style.gridColumn = '3';
+                    }
+                }
+            } else {
+                // MOBILE / TABLET PORTRAIT: Reset styles to let CSS take over
+                if (image) { image.style.gridRow = ''; image.style.gridColumn = ''; image.style.textAlign = ''; }
+                if (dot) { dot.style.gridRow = ''; dot.style.gridColumn = ''; dot.style.paddingTop = ''; }
+                if (content) { content.style.gridRow = ''; content.style.gridColumn = ''; content.style.textAlign = ''; }
+                item.style.alignItems = '';
+            }
+        });
+    }
+
+    // Run on load and resize
+    window.addEventListener('load', fixZigZagAlignment);
+    window.addEventListener('resize', fixZigZagAlignment);
+    // Also run immediately in case DOM is ready
+    fixZigZagAlignment();
 </script>
 
 {% endblock %}
