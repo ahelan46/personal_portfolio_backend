@@ -83,7 +83,7 @@ export default function Certifications() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/certifications/")
+    fetch(`${import.meta.env.VITE_API_URL}/api/certifications/`)
       .then((res) => res.json())
       .then((data) => {
         setCerts(data);

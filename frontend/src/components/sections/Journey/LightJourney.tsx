@@ -102,7 +102,7 @@ export default function LightJourney() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/journey/")
+    fetch(`${import.meta.env.VITE_API_URL}/api/journey/`)
       .then((res) => res.json())
       .then((data) => {
         setChapters(data.results || data);

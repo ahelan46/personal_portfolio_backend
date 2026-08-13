@@ -10,9 +10,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  base: '/static/dist/',
+  base: '/',
   build: {
-    outDir: '../portfolio/static/dist',
+    outDir: "dist",
     emptyOutDir: true,
   }
 })

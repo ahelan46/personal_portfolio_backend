@@ -8,7 +8,7 @@ import Contact from './pages/Contact';
 
 function App() {
   return (
-    <Router>
+    <Router basename={import.meta.env.DEV ? '/static/dist/' : '/'}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/projects" element={<Projects />} />

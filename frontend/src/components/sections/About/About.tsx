@@ -40,7 +40,7 @@ export default function About() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/about/")
+    fetch(`${import.meta.env.VITE_API_URL}/api/about/`)
       .then((res) => res.json())
       .then((data) => {
         // Since there is only one About object, if it's a paginated list, we take the first.

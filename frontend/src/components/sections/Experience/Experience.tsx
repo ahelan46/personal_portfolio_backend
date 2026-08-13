@@ -61,7 +61,7 @@ export default function Experience() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/experience/")
+    fetch(`${import.meta.env.VITE_API_URL}/api/experience/`)
       .then((res) => res.json())
       .then((data) => {
         setRoles(data);

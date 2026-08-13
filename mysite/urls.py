@@ -25,7 +25,7 @@ urlpatterns = [
     path('api/', include('portfolio.api_urls')),
     path('', home, name='home'),
     # Catch-all for React SPA routing - serve index.html for all non-API routes
-    re_path(r'^(?!api/)(?!static/).*$', home),
+    re_path(r'^(?!api/)(?!static/)(?!media/).*$', home),
 ]
 
 if settings.DEBUG:
